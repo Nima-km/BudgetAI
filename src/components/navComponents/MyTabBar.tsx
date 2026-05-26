@@ -1,0 +1,254 @@
+import CameraIcon from "@/assets/svg/camera.svg";
+import { colors } from "@/theme";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
+import Animated, {
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withSpring,
+} from "react-native-reanimated";
+import { H4, H5, H5_SemiBold } from "../UIcomponents/Typography";
+
+const MyNavBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+	const router = useRouter();
+	const isFocused = (index: number) => state.index === index;
+	const [open, setOpen] = useState(false);
+	const progress = useSharedValue(0);
+	const toggleMenu = () => {
+		setOpen(!open);
+		progress.value = withSpring(open ? 0 : 1, {
+			damping: 3000,
+			stiffness: 3000,
+		});
+	};
+	const option1Style = useAnimatedStyle(() => ({
+		transform: [
+			{ translateY: interpolate(progress.value, [0, 1], [0, -10]) },
+		],
+		opacity: progress.value,
+		//   shadowColor: "black",
+	}));
+
+	// Option 2 animation
+	const option2Style = useAnimatedStyle(() => ({
+		transform: [
+			{ translateY: interpolate(progress.value, [0, 1], [0, -80]) },
+		],
+		opacity: progress.value,
+		//   shadowColor: "white",
+	}));
+
+	// Option 3 animation
+	const option3Style = useAnimatedStyle(() => ({
+		transform: [
+			{ translateY: interpolate(progress.value, [0, 1], [0, -150]) },
+		],
+		opacity: progress.value,
+	}));
+	return (
+		<View
+			style={{
+				flexDirection: "row",
+				paddingHorizontal: 16,
+				paddingTop: 20,
+				paddingBottom: 20,
+				justifyContent: "space-around",
+				backgroundColor: colors.background,
+			}}
+		>
+			<Pressable
+				onPress={() => router.navigate("/")}
+				style={{ height: 48, alignItems: "center", width: 65 }}
+			>
+				{isFocused(0) ? <H5_SemiBold>Home</H5_SemiBold> : <H5>Home</H5>}
+			</Pressable>
+			<Pressable
+				onPress={() => router.navigate("/(tabs)/analytics")}
+				style={{ height: 48, alignItems: "center", width: 68 }}
+			>
+				{isFocused(1) ? (
+					<H5_SemiBold>Budget</H5_SemiBold>
+				) : (
+					<H5>Budget</H5>
+				)}
+			</Pressable>
+			<View
+				style={{
+					width: 60,
+					// backgroundColor: "red",
+					marginTop: -40,
+					alignItems: "center",
+				}}
+			>
+				<View
+					style={{
+						backgroundColor: colors.white,
+						width: 60,
+						height: 60,
+						borderRadius: 60,
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Animated.View
+						style={[styles.option, option1Style]}
+						pointerEvents={open ? "auto" : "none"}
+					>
+						<TouchableOpacity
+							style={[
+								open ? styles.boxWithShadow : {},
+								{
+									width: 50,
+									height: 50,
+									borderRadius: 50,
+									backgroundColor: colors.white,
+									justifyContent: "center",
+									alignItems: "center",
+								},
+							]}
+							onPress={() => {
+								(router.navigate({
+									pathname: "/(tabs)/log",
+									params: { pageId: 2 },
+								}),
+									toggleMenu());
+							}}
+						></TouchableOpacity>
+						<TouchableOpacity
+							style={[
+								open ? styles.boxWithShadow : {},
+								styles.optionBtn,
+							]}
+							onPress={() => {
+								(router.navigate({
+									pathname: "/(tabs)/log",
+									params: { pageId: 2 },
+								}),
+									toggleMenu());
+							}}
+						>
+							<H4 style={{ color: colors.primary }}>
+								Scan Barcode
+							</H4>
+						</TouchableOpacity>
+						<CameraIcon pointerEvents="none" color={colors.white} />
+					</Animated.View>
+					<Animated.View
+						style={[styles.option, option2Style]}
+						pointerEvents={open ? "auto" : "none"}
+					>
+						<TouchableOpacity
+							style={[
+								open ? styles.boxWithShadow : {},
+								{
+									width: 50,
+									height: 50,
+									borderRadius: 50,
+									backgroundColor: colors.white,
+									justifyContent: "center",
+									alignItems: "center",
+								},
+							]}
+							onPress={() => {
+								(router.navigate({
+									pathname: "/(tabs)/log",
+									params: { pageId: 3 },
+								}),
+									toggleMenu());
+							}}
+						></TouchableOpacity>
+
+						<TouchableOpacity
+							style={[
+								open ? styles.boxWithShadow : {},
+								styles.optionBtn,
+							]}
+							onPress={() => {
+								(router.navigate({
+									pathname: "/(tabs)/log",
+									params: { pageId: 3 },
+								}),
+									toggleMenu());
+							}}
+						>
+							<H4 style={{ color: colors.primary }}>Quick Add</H4>
+						</TouchableOpacity>
+					</Animated.View>
+
+					<TouchableOpacity
+						style={{
+							backgroundColor: colors.primary,
+							width: 50,
+							height: 50,
+							borderRadius: 50,
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+						onPress={toggleMenu}
+					>
+						<CameraIcon
+							pointerEvents="none"
+							color={colors.white}
+							width={25}
+							height={25}
+						/>
+					</TouchableOpacity>
+				</View>
+			</View>
+			<Pressable
+				onPress={() => router.navigate("/(tabs)/log")}
+				style={{ height: 48, alignItems: "center", width: 72 }}
+			>
+				{isFocused(2) ? (
+					<H5_SemiBold>Analytics</H5_SemiBold>
+				) : (
+					<H5>Logs</H5>
+				)}
+			</Pressable>
+			<Pressable
+				onPress={() => router.navigate("/(tabs)/log")}
+				style={{ height: 48, alignItems: "center", width: 65 }}
+			>
+				{isFocused(3) ? (
+					<H5_SemiBold>Profile</H5_SemiBold>
+				) : (
+					<H5>Profile</H5>
+				)}
+			</Pressable>
+		</View>
+	);
+};
+
+export default MyNavBar;
+
+const styles = StyleSheet.create({
+	option: {
+		flexDirection: "row",
+		position: "absolute",
+		bottom: 70,
+		gap: 8,
+		height: 50,
+		alignItems: "center",
+		// backgroundColor: "red",
+		elevation: 5,
+	},
+	optionBtn: {
+		width: 141,
+		height: 50,
+		borderRadius: 8,
+		backgroundColor: colors.white,
+		justifyContent: "center",
+		alignItems: "center",
+		// marginBottom: 10,
+	},
+	boxWithShadow: {
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.8,
+		shadowRadius: 2,
+		elevation: 5,
+	},
+});
